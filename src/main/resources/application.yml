@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: skylane-booking
+  datasource:
+    # single-instance PostgreSQL in a single region
+    url: ${BOOKING_DB_URL:jdbc:postgresql://booking-db.us-east-1.skylane.internal:5432/booking}
+    username: ${BOOKING_DB_USER:booking}
+    password: ${BOOKING_DB_PASS:booking}
+    hikari:
+      maximum-pool-size: 40
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: true
+    properties:
+      hibernate:
+        jdbc:
+          lock:
+            timeout: 10000
+
+skylane:
+  region: ${SKYLANE_REGION:us-east-1}
+  jwt:
+    secret: ${JWT_SECRET:skylane-dev-secret-key-please-rotate-in-prod-0123456789}
+  payment:
+    gateway-url: ${PAYMENT_GATEWAY_URL:https://pay.skylane-partner.com/charge}
+    timeout-ms: 20000
+  gds:
+    export-dir: ${GDS_EXPORT_DIR:/var/skylane/gds}
+    # nightly diff window 02:00-04:00
+    cron: "0 0 2 * * *"
+
+logging:
+  level:
+    com.skylane.booking: INFO
